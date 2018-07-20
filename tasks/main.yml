@@ -11,9 +11,9 @@
   when: "'group' not in item and users_create_per_user_group"
   tags: ['users','configuration']
 
-- name: Create user home directories
+- name: Create base directory of user home dirs
   file:
-    path: "{{ item.home }}"
+    path: "{{ '/'.join( item.home.split('/')[:-1] ) }}"
     state: directory
   with_items: "{{ users }}"
   when: item.home is defined
