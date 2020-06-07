@@ -7,7 +7,10 @@
 - name: Per-user group creation
   group: name="{{item.username}}"
          gid="{{item.gid | default(item.uid) | default(omit)}}"
-  with_items: "{{users}}"
+  with_flattened:
+    - "{{ users }}"
+    - "{{ users_host }}"
+    - "{{ users_group }}"
   when: "'group' not in item and users_create_per_user_group"
   tags: ['users','configuration']
 
@@ -33,7 +36,10 @@
     createhome: "{{'yes' if users_create_homedirs else 'no'}}"
     generate_ssh_key: "{{ item.generate_ssh_key | default(omit) }}"
     update_password: "{{item.update_password | default(omit)}}"
-  with_items: "{{users}}"
+  with_flattened:
+    - "{{ users }}"
+    - "{{ users_host }}"
+    - "{{ users_group }}"
   tags: ['users','configuration']
 
 - name: SSH keys
@@ -56,7 +62,10 @@
     mode: 0644
     create: true
   when: users_create_homedirs and item.profile is defined
-  with_items: "{{users}}"
+  with_flattened:
+    - "{{ users }}"
+    - "{{ users_host }}"
+    - "{{ users_group }}"
 
 - name: Deleted user removal
   user:
