@@ -24,7 +24,7 @@
 - name: User creation
   user:
     name: "{{item.username}}"
-    group: "{{item.group | default(item.username if users_create_per_user_group else users_group)}}"
+    group: "{{item.group | default(item.username if users_create_per_user_group else users_group_default )}}"
     # empty string removes user from all secondary groups
     groups: "{{item.groups | join(',') if 'groups' in item else ''}}"
     append: "{{item.append | default(omit)}}"
@@ -58,7 +58,7 @@
     block: "{{item.profile}}"
     dest: "{{ item.home | default('/home/' + item.username) }}/.profile"
     owner: "{{item.username}}"
-    group: "{{item.group | default(item.username if users_create_per_user_group else users_group)}}"
+    group: "{{item.group | default(item.username if users_create_per_user_group else users_group_default )}}"
     mode: 0644
     create: true
   when: users_create_homedirs and item.profile is defined
